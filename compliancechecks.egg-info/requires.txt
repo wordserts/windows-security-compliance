@@ -1,0 +1,4 @@
+dt-extensions-sdk
+
+[dev]
+dt-extensions-sdk[cli]

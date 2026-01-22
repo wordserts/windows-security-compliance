@@ -1,0 +1,71 @@
+name: custom:windows.security.compliance
+version: 1.0.10
+minDynatraceVersion: "1.268"
+author:
+  name: Vince
+
+python:
+  runtime:
+    module: compliancechecks
+    version:
+      min: "3.10"
+  activation:
+    local: {}
+
+metrics:
+  - key: windows.security.compliance.status
+    metadata:
+      displayName: Security Compliance Status
+      description: Security control compliance status (1=compliant, 0=non-compliant, -1=not configured)
+      unit: State
+  
+  - key: windows.security.compliance.value
+    metadata:
+      displayName: Security Control Current Value
+      description: Current value of the security control
+      unit: Count
+
+topology:
+  types:
+    - name: windows:security:compliance:control
+      displayName: Windows Security Compliance Control
+      enabled: true
+      rules:
+        - idPattern: security_control_{control_id}_{dt.entity.host}
+          instanceNamePattern: "{control_name}"
+          sources:
+            - sourceType: Metrics
+              condition: $prefix(windows.security.compliance)
+          requiredDimensions:
+            - key: control_id
+            - key: dt.entity.host
+          attributes:
+            - key: control_name
+              displayName: Control Name
+              pattern: "{control_name}"
+            - key: control_category
+              displayName: Category
+              pattern: "{control_category}"
+            - key: control_frameworks
+              displayName: Frameworks
+              pattern: "{control_frameworks}"
+            - key: registry_path
+              displayName: Registry Path
+              pattern: "{registry_path}"
+            - key: registry_value
+              displayName: Registry Value Name
+              pattern: "{registry_value}"
+            - key: expected_value
+              displayName: Expected Value
+              pattern: "{expected_value}"
+            - key: current_value
+              displayName: Current Value
+              pattern: "{current_value}"
+            - key: severity
+              displayName: Severity
+              pattern: "{severity}"
+            - key: description
+              displayName: Description
+              pattern: "{description}"
+          role: default
+

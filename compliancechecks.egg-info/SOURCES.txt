@@ -1,0 +1,10 @@
+README.md
+setup.py
+compliancechecks/__init__.py
+compliancechecks/__main__.py
+compliancechecks/extension.py
+compliancechecks.egg-info/PKG-INFO
+compliancechecks.egg-info/SOURCES.txt
+compliancechecks.egg-info/dependency_links.txt
+compliancechecks.egg-info/requires.txt
+compliancechecks.egg-info/top_level.txt
