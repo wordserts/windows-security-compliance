@@ -22,6 +22,136 @@ import winreg
 # }
 
 # ============================================================================
+# SMB SECURITY (5 controls) - CRITICAL for ransomware protection
+# ============================================================================
+SMB_SECURITY_CONTROLS = [
+    {"control_id": "CIS-18.3.1_E8-N01_PCI-2.2", "control_name": "SMBv1 Client Disabled", "category": "Network", "frameworks": "CIS,Essential8,PCI-DSS", "severity": "Critical", "description": "Disables SMBv1 client (WannaCry/NotPetya protection)", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\mrxsmb10", "value_name": "Start", "expected_value": 4},
+    {"control_id": "CIS-18.3.2_E8-N02_PCI-2.2", "control_name": "SMBv1 Server Disabled", "category": "Network", "frameworks": "CIS,Essential8,PCI-DSS", "severity": "Critical", "description": "Disables SMBv1 server (ransomware protection)", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters", "value_name": "SMB1", "expected_value": 0},
+    {"control_id": "CIS-18.3.3_PCI-4.1", "control_name": "SMB Server Encryption Required", "category": "Network", "frameworks": "CIS,PCI-DSS", "severity": "High", "description": "Requires encryption for SMB traffic", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters", "value_name": "EncryptData", "expected_value": 1},
+    {"control_id": "CIS-2.3.10.14", "control_name": "SMB Null Session Shares", "category": "Network", "frameworks": "CIS", "severity": "High", "description": "Prevents null session share enumeration", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters", "value_name": "NullSessionShares", "expected_value": ""},
+    {"control_id": "CIS-2.3.10.15", "control_name": "SMB Null Session Pipes", "category": "Network", "frameworks": "CIS", "severity": "High", "description": "Prevents null session pipe access", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters", "value_name": "NullSessionPipes", "expected_value": ""},
+]
+
+# ============================================================================
+# PROTOCOL ATTACK PREVENTION (6 controls) - CRITICAL for MITM attacks
+# ============================================================================
+PROTOCOL_ATTACK_CONTROLS = [
+    {"control_id": "CIS-18.9.47.5.1_E8-N03", "control_name": "LLMNR Disabled", "category": "Network", "frameworks": "CIS,Essential8", "severity": "Critical", "description": "Disables LLMNR to prevent MITM attacks", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Windows NT\DNSClient", "value_name": "EnableMulticast", "expected_value": 0},
+    {"control_id": "CIS-18.9.47.5.2_E8-N04", "control_name": "WPAD Disabled", "category": "Network", "frameworks": "CIS,Essential8", "severity": "Critical", "description": "Disables WPAD to prevent proxy poisoning", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad", "value_name": "WpadOverride", "expected_value": 1},
+    {"control_id": "CIS-18.4.8.1_E8-N05", "control_name": "NetBIOS over TCP/IP Disabled", "category": "Network", "frameworks": "CIS,Essential8", "severity": "High", "description": "Disables NetBT for security", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\NetBT\Parameters", "value_name": "EnableLMHosts", "expected_value": 0},
+    {"control_id": "CIS-18.5.11.2", "control_name": "ICMP Redirect Disabled", "category": "Network", "frameworks": "CIS", "severity": "Medium", "description": "Prevents ICMP redirect attacks", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\Tcpip\Parameters", "value_name": "EnableICMPRedirect", "expected_value": 0},
+    {"control_id": "CIS-18.4.6.2", "control_name": "IPv6 Transition ISATAP Disabled", "category": "Network", "frameworks": "CIS", "severity": "Medium", "description": "Disables ISATAP transition technology", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Windows\TCPIP\v6Transition", "value_name": "ISATAP_State", "expected_value": "Disabled"},
+    {"control_id": "CIS-18.4.6.3", "control_name": "IPv6 Transition Teredo Disabled", "category": "Network", "frameworks": "CIS", "severity": "Medium", "description": "Disables Teredo transition technology", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Windows\TCPIP\v6Transition", "value_name": "Teredo_State", "expected_value": "Disabled"},
+]
+
+# ============================================================================
+# INTERACTIVE LOGON (8 controls) - Compliance requirements
+# ============================================================================
+INTERACTIVE_LOGON_CONTROLS = [
+    {"control_id": "CIS-2.3.7.1", "control_name": "Interactive Logon Message Title", "category": "Authentication", "frameworks": "CIS", "severity": "Medium", "description": "Legal notice caption for logon", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", "value_name": "LegalNoticeCaption", "expected_value": ""},
+    {"control_id": "CIS-2.3.7.2", "control_name": "Interactive Logon Message Text", "category": "Authentication", "frameworks": "CIS", "severity": "Medium", "description": "Legal notice text for logon", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", "value_name": "LegalNoticeText", "expected_value": ""},
+    {"control_id": "CIS-2.3.7.3", "control_name": "Don't Display Last Username", "category": "Authentication", "frameworks": "CIS", "severity": "Medium", "description": "Hides last logged on username", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", "value_name": "DontDisplayLastUserName", "expected_value": 1},
+    {"control_id": "CIS-2.3.7.4", "control_name": "Require Ctrl+Alt+Del", "category": "Authentication", "frameworks": "CIS", "severity": "Low", "description": "Requires secure attention sequence", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", "value_name": "DisableCAD", "expected_value": 0},
+    {"control_id": "CIS-2.3.7.5", "control_name": "Smart Card Removal Behavior", "category": "Authentication", "frameworks": "CIS", "severity": "Medium", "description": "Action on smart card removal", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "value_name": "ScRemoveOption", "expected_value": "2"},
+    {"control_id": "CIS-2.3.7.6", "control_name": "Enable Administrator Account", "category": "Authentication", "frameworks": "CIS", "severity": "High", "description": "Monitors admin account status", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", "value_name": "dontdisplaylastusername", "expected_value": 1},
+    {"control_id": "CIS-2.3.7.9", "control_name": "Disable Lock Workstation", "category": "Authentication", "frameworks": "CIS", "severity": "Low", "description": "Allows workstation lock feature", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", "value_name": "DisableLockWorkstation", "expected_value": 0},
+    {"control_id": "CIS-18.9.6.2", "control_name": "Enumerate Local Users on Domain-Joined", "category": "Authentication", "frameworks": "CIS", "severity": "Medium", "description": "Prevents local user enumeration", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Windows\System", "value_name": "EnumerateLocalUsers", "expected_value": 0},
+]
+
+# ============================================================================
+# MSS (MICROSOFT SECURITY SETTINGS) (10 controls)
+# ============================================================================
+MSS_CONTROLS = [
+    {"control_id": "CIS-18.5.4.3_MSS-01", "control_name": "MSS Safe DLL Search Mode", "category": "SystemHardening", "frameworks": "CIS", "severity": "High", "description": "Enables safe DLL search order", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Control\Session Manager", "value_name": "SafeDllSearchMode", "expected_value": 1},
+    {"control_id": "CIS-18.5.5.2_MSS-02", "control_name": "MSS Screen Saver Grace Period", "category": "SystemHardening", "frameworks": "CIS", "severity": "Medium", "description": "Screen saver grace period", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "value_name": "ScreenSaverGracePeriod", "expected_value": "5", "comparison": "lte"},
+    {"control_id": "CIS-18.5.8.1_MSS-03", "control_name": "MSS Warning Level", "category": "SystemHardening", "frameworks": "CIS", "severity": "Medium", "description": "Disk quota warning percentage", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\Eventlog\Security", "value_name": "WarningLevel", "expected_value": 90, "comparison": "lte"},
+    {"control_id": "CIS-18.5.9.1_MSS-04", "control_name": "MSS Auto Logon Disabled", "category": "Authentication", "frameworks": "CIS", "severity": "High", "description": "Prevents automatic logon", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "value_name": "AutoAdminLogon", "expected_value": "0"},
+    {"control_id": "CIS-18.5.11.3_MSS-05", "control_name": "MSS TCP Max Data Retransmissions IPv4", "category": "Network", "frameworks": "CIS", "severity": "Low", "description": "TCP data retransmission attempts", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\Tcpip\Parameters", "value_name": "TcpMaxDataRetransmissions", "expected_value": 3, "comparison": "lte"},
+    {"control_id": "CIS-18.5.11.4_MSS-06", "control_name": "MSS TCP Max Data Retransmissions IPv6", "category": "Network", "frameworks": "CIS", "severity": "Low", "description": "TCP data retransmission attempts IPv6", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters", "value_name": "TcpMaxDataRetransmissions", "expected_value": 3, "comparison": "lte"},
+    {"control_id": "CIS-18.5.14.1_MSS-07", "control_name": "MSS Enable Firewall", "category": "Network", "frameworks": "CIS", "severity": "Critical", "description": "Ensures Windows Firewall enabled", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\StandardProfile", "value_name": "EnableFirewall", "expected_value": 1},
+    {"control_id": "CIS-18.5.19.1_MSS-08", "control_name": "MSS Perform Router Discovery", "category": "Network", "frameworks": "CIS", "severity": "Medium", "description": "Controls router discovery", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\Tcpip\Parameters", "value_name": "PerformRouterDiscovery", "expected_value": 0},
+    {"control_id": "CIS-18.5.20.1_MSS-09", "control_name": "MSS No Name Release On Demand", "category": "Network", "frameworks": "CIS", "severity": "Low", "description": "Controls NetBIOS name release", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\NetBT\Parameters", "value_name": "NoNameReleaseOnDemand", "expected_value": 1},
+    {"control_id": "CIS-18.5.21.1_MSS-10", "control_name": "MSS Hidden Shares", "category": "Network", "frameworks": "CIS", "severity": "Medium", "description": "Requires admin shares", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters", "value_name": "AutoShareWks", "expected_value": 0},
+]
+
+# ============================================================================
+# PRINT SERVICES & SYSTEM SERVICES (7 controls) - PrintNightmare mitigation
+# ============================================================================
+PRINT_SERVICES_CONTROLS = [
+    {"control_id": "CIS-5.35_PN-01", "control_name": "Print Spooler Service Disabled", "category": "SystemHardening", "frameworks": "CIS", "severity": "High", "description": "Disables Print Spooler (PrintNightmare mitigation)", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\Spooler", "value_name": "Start", "expected_value": 4},
+    {"control_id": "CIS-18.9.59.1_PN-02", "control_name": "Point and Print Restrictions", "category": "SystemHardening", "frameworks": "CIS", "severity": "High", "description": "Restricts Point and Print operations", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Windows NT\Printers\PointAndPrint", "value_name": "RestrictDriverInstallationToAdministrators", "expected_value": 1},
+    {"control_id": "CIS-5.33", "control_name": "Remote Registry Service Disabled", "category": "SystemHardening", "frameworks": "CIS", "severity": "High", "description": "Disables Remote Registry service", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\RemoteRegistry", "value_name": "Start", "expected_value": 4},
+    {"control_id": "CIS-5.37", "control_name": "SNMP Service Disabled", "category": "SystemHardening", "frameworks": "CIS", "severity": "Medium", "description": "Disables SNMP service", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\SNMP", "value_name": "Start", "expected_value": 4},
+    {"control_id": "CIS-5.40", "control_name": "Windows Search Service", "category": "SystemHardening", "frameworks": "CIS", "severity": "Low", "description": "Controls Windows Search service", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SYSTEM\CurrentControlSet\Services\WSearch", "value_name": "Start", "expected_value": 4},
+    {"control_id": "CIS-18.9.59.2_PN-03", "control_name": "Package Point and Print NoWarning", "category": "SystemHardening", "frameworks": "CIS", "severity": "High", "description": "Shows warning for package point and print", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Windows NT\Printers\PackagePointAndPrint", "value_name": "PackagePointAndPrintServerList", "expected_value": 1},
+    {"control_id": "CIS-18.9.59.3_PN-04", "control_name": "UNC Hardened Access Paths", "category": "Network", "frameworks": "CIS", "severity": "High", "description": "Hardens UNC path access", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths", "value_name": "\\*\\SYSVOL", "expected_value": "RequireMutualAuthentication=1,RequireIntegrity=1"},
+]
+
+# ============================================================================
+# MICROSOFT EDGE BROWSER HARDENING (10 controls) - Essential 8 L2/L3
+# ============================================================================
+EDGE_BROWSER_CONTROLS = [
+    {"control_id": "E8-M4-EDGE-01", "control_name": "Edge SmartScreen Enabled", "category": "BrowserSecurity", "frameworks": "Essential8", "severity": "High", "description": "Enables Edge SmartScreen filter", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Edge", "value_name": "SmartScreenEnabled", "expected_value": 1},
+    {"control_id": "E8-M4-EDGE-02", "control_name": "Edge SmartScreen PUA Enabled", "category": "BrowserSecurity", "frameworks": "Essential8", "severity": "High", "description": "Blocks potentially unwanted apps", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Edge", "value_name": "SmartScreenPuaEnabled", "expected_value": 1},
+    {"control_id": "E8-M4-EDGE-03", "control_name": "Edge Block Outdated Plugins", "category": "BrowserSecurity", "frameworks": "Essential8", "severity": "Medium", "description": "Blocks outdated plugins", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Edge", "value_name": "DefaultPluginsSetting", "expected_value": 2},
+    {"control_id": "E8-M4-EDGE-04", "control_name": "Edge Password Manager Disabled", "category": "BrowserSecurity", "frameworks": "Essential8", "severity": "Medium", "description": "Disables built-in password manager", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Edge", "value_name": "PasswordManagerEnabled", "expected_value": 0},
+    {"control_id": "E8-M4-EDGE-05", "control_name": "Edge Sync Disabled", "category": "BrowserSecurity", "frameworks": "Essential8", "severity": "Low", "description": "Disables browser sync for security", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Edge", "value_name": "SyncDisabled", "expected_value": 1},
+    {"control_id": "E8-M4-EDGE-06", "control_name": "Edge DNS over HTTPS", "category": "BrowserSecurity", "frameworks": "Essential8", "severity": "Medium", "description": "Enables encrypted DNS", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Edge", "value_name": "DnsOverHttpsMode", "expected_value": "secure"},
+    {"control_id": "E8-M4-EDGE-07", "control_name": "Edge Enhanced Security Mode", "category": "BrowserSecurity", "frameworks": "Essential8", "severity": "High", "description": "Enables enhanced security mode", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Edge", "value_name": "EnhanceSecurityMode", "expected_value": 1},
+    {"control_id": "E8-M4-EDGE-08", "control_name": "Edge Block Third-Party Cookies", "category": "BrowserSecurity", "frameworks": "Essential8", "severity": "Medium", "description": "Blocks third-party cookies", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Edge", "value_name": "BlockThirdPartyCookies", "expected_value": 1},
+    {"control_id": "E8-M4-EDGE-09", "control_name": "Edge SSL Error Override Disabled", "category": "BrowserSecurity", "frameworks": "Essential8", "severity": "High", "description": "Prevents SSL error bypasses", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Edge", "value_name": "SSLErrorOverrideAllowed", "expected_value": 0},
+    {"control_id": "E8-M4-EDGE-10", "control_name": "Edge Download Restrictions", "category": "BrowserSecurity", "frameworks": "Essential8", "severity": "Medium", "description": "Restricts dangerous downloads", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\Edge", "value_name": "DefaultDownloadDirectory", "expected_value": ""},
+]
+
+# ============================================================================
+# ADDITIONAL FIREWALL CONTROLS (6 controls)
+# ============================================================================
+ADDITIONAL_FIREWALL_CONTROLS = [
+    {"control_id": "CIS-18.5.19.2.7", "control_name": "Firewall Domain - Log Dropped Packets", "category": "Network", "frameworks": "CIS", "severity": "Medium", "description": "Logs dropped packets in Domain profile", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging", "value_name": "LogDroppedPackets", "expected_value": 1},
+    {"control_id": "CIS-18.5.19.2.8", "control_name": "Firewall Domain - Log Successful Connections", "category": "Network", "frameworks": "CIS", "severity": "Low", "description": "Logs successful connections", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging", "value_name": "LogSuccessfulConnections", "expected_value": 1},
+    {"control_id": "CIS-18.5.19.3.3", "control_name": "Firewall Private - Log Dropped Packets", "category": "Network", "frameworks": "CIS", "severity": "Medium", "description": "Logs dropped packets in Private profile", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging", "value_name": "LogDroppedPackets", "expected_value": 1},
+    {"control_id": "CIS-18.5.19.4.3", "control_name": "Firewall Public - Log Dropped Packets", "category": "Network", "frameworks": "CIS", "severity": "Medium", "description": "Logs dropped packets in Public profile", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging", "value_name": "LogDroppedPackets", "expected_value": 1},
+    {"control_id": "CIS-18.5.19.2.9", "control_name": "Firewall Domain - Unicast Response", "category": "Network", "frameworks": "CIS", "severity": "Medium", "description": "Controls unicast response to multicast", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile", "value_name": "DisableUnicastResponsesToMulticastBroadcast", "expected_value": 1},
+    {"control_id": "CIS-18.5.19.2.10", "control_name": "Firewall Domain - Notify on Listen", "category": "Network", "frameworks": "CIS", "severity": "Low", "description": "Notifies when app starts listening", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile", "value_name": "DisableNotifications", "expected_value": 0},
+]
+
+# ============================================================================
+# APPLICATION SECURITY - ADOBE, JAVA, SCRIPTS (10 controls)
+# ============================================================================
+APP_SECURITY_CONTROLS = [
+    {"control_id": "E8-M4-ADOBE-01", "control_name": "Adobe Reader Protected Mode", "category": "ApplicationSecurity", "frameworks": "Essential8", "severity": "High", "description": "Enables Adobe Reader protected mode", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Adobe\Acrobat Reader\DC\FeatureLockDown", "value_name": "bProtectedMode", "expected_value": 1},
+    {"control_id": "E8-M4-ADOBE-02", "control_name": "Adobe Reader Enhanced Security", "category": "ApplicationSecurity", "frameworks": "Essential8", "severity": "High", "description": "Enables enhanced security in browser", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Adobe\Acrobat Reader\DC\FeatureLockDown", "value_name": "bEnhancedSecurityInBrowser", "expected_value": 1},
+    {"control_id": "E8-M4-ADOBE-03", "control_name": "Adobe Reader JavaScript Disabled", "category": "ApplicationSecurity", "frameworks": "Essential8", "severity": "High", "description": "Disables JavaScript in PDFs", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Adobe\Acrobat Reader\DC\FeatureLockDown", "value_name": "bDisableJavaScript", "expected_value": 1},
+    {"control_id": "E8-M4-JAVA-01", "control_name": "Java Deployment Security Level", "category": "ApplicationSecurity", "frameworks": "Essential8", "severity": "High", "description": "Sets Java security to high", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\JavaSoft\Java Runtime Environment", "value_name": "deployment.security.level", "expected_value": "HIGH"},
+    {"control_id": "E8-M4-JAVA-02", "control_name": "Java Auto Update Disabled", "category": "ApplicationSecurity", "frameworks": "Essential8", "severity": "Medium", "description": "Disables Java auto-update", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\JavaSoft\Java Update\Policy", "value_name": "EnableAutoUpdateCheck", "expected_value": 0},
+    {"control_id": "CIS-18.9.84.1_E8-M1", "control_name": "Windows Script Host Disabled", "category": "ApplicationControl", "frameworks": "CIS,Essential8", "severity": "High", "description": "Disables Windows Script Host", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Microsoft\Windows Script Host\Settings", "value_name": "Enabled", "expected_value": 0},
+    {"control_id": "CIS-18.9.84.2_E8-M1", "control_name": "VBScript Disabled", "category": "ApplicationControl", "frameworks": "CIS,Essential8", "severity": "High", "description": "Disables VBScript execution", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Microsoft\Windows Script Host\Settings", "value_name": "DisableVBScript", "expected_value": 1},
+    {"control_id": "CIS-18.9.84.3_E8-M1", "control_name": "JScript Disabled", "category": "ApplicationControl", "frameworks": "CIS,Essential8", "severity": "High", "description": "Disables JScript execution", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Microsoft\Windows Script Host\Settings", "value_name": "DisableJScript", "expected_value": 1},
+    {"control_id": "E8-M4-SCRIPT-01", "control_name": "Flash Player Kill Bit", "category": "ApplicationSecurity", "frameworks": "Essential8", "severity": "High", "description": "Disables Flash Player ActiveX", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Microsoft\Internet Explorer\ActiveX Compatibility\{D27CDB6E-AE6D-11CF-96B8-444553540000}", "value_name": "Compatibility Flags", "expected_value": 1024},
+    {"control_id": "E8-M4-SCRIPT-02", "control_name": "Silverlight Kill Bit", "category": "ApplicationSecurity", "frameworks": "Essential8", "severity": "Medium", "description": "Disables Silverlight plugin", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Microsoft\Internet Explorer\ActiveX Compatibility\{DFEAF541-F3E1-4C24-ACAC-99C30715084A}", "value_name": "Compatibility Flags", "expected_value": 1024},
+]
+
+# ============================================================================
+# ADDITIONAL OUTLOOK SECURITY (5 controls)
+# ============================================================================
+ADDITIONAL_OUTLOOK_CONTROLS = [
+    {"control_id": "E8-M3-OUTLOOK-01", "control_name": "Outlook Object Model Guard Prompt", "category": "OfficeSecurity", "frameworks": "Essential8", "severity": "High", "description": "Prompts for object model access", "registry_hive": winreg.HKEY_CURRENT_USER, "registry_path": r"SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security", "value_name": "PromptOOMAddressBookAccess", "expected_value": 1},
+    {"control_id": "E8-M3-OUTLOOK-02", "control_name": "Outlook Block External Content", "category": "OfficeSecurity", "frameworks": "Essential8", "severity": "High", "description": "Blocks external content in emails", "registry_hive": winreg.HKEY_CURRENT_USER, "registry_path": r"SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Mail", "value_name": "BlockExtContent", "expected_value": 1},
+    {"control_id": "E8-M3-OUTLOOK-03", "control_name": "Outlook Level1 File Extensions", "category": "OfficeSecurity", "frameworks": "Essential8", "severity": "High", "description": "Blocks dangerous file types", "registry_hive": winreg.HKEY_CURRENT_USER, "registry_path": r"SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security", "value_name": "Level1Remove", "expected_value": ""},
+    {"control_id": "E8-M3-OUTLOOK-04", "control_name": "Outlook Disable Hyperlinks", "category": "OfficeSecurity", "frameworks": "Essential8", "severity": "Medium", "description": "Warns before opening hyperlinks", "registry_hive": winreg.HKEY_CURRENT_USER, "registry_path": r"SOFTWARE\Policies\Microsoft\Office\16.0\Common\Security", "value_name": "DisableHyperlinkWarning", "expected_value": 0},
+    {"control_id": "E8-M3-OUTLOOK-05", "control_name": "Outlook Junk Email Protection", "category": "OfficeSecurity", "frameworks": "Essential8", "severity": "Medium", "description": "Enables junk email filtering", "registry_hive": winreg.HKEY_CURRENT_USER, "registry_path": r"SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Mail", "value_name": "JunkMailImportLists", "expected_value": 1},
+]
+
+# ============================================================================
+# WINDOWS STORE RESTRICTIONS (3 controls)
+# ============================================================================
+WINDOWS_STORE_CONTROLS = [
+    {"control_id": "E8-M1-STORE-01", "control_name": "Windows Store Disabled", "category": "ApplicationControl", "frameworks": "Essential8", "severity": "Medium", "description": "Disables Windows Store for enterprise", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\WindowsStore", "value_name": "RemoveWindowsStore", "expected_value": 1},
+    {"control_id": "E8-M1-STORE-02", "control_name": "Windows Store Auto Download Disabled", "category": "ApplicationControl", "frameworks": "Essential8", "severity": "Medium", "description": "Disables auto app downloads", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\WindowsStore", "value_name": "AutoDownload", "expected_value": 2},
+    {"control_id": "E8-M1-STORE-03", "control_name": "Private Store Only", "category": "ApplicationControl", "frameworks": "Essential8", "severity": "Medium", "description": "Restricts to private store only", "registry_hive": winreg.HKEY_LOCAL_MACHINE, "registry_path": r"SOFTWARE\Policies\Microsoft\WindowsStore", "value_name": "RequirePrivateStoreOnly", "expected_value": 1},
+]
+
+# ============================================================================
 # AUTHENTICATION & CREDENTIALS (8 controls)
 # ============================================================================
 AUTHENTICATION_CONTROLS = [
@@ -194,6 +324,16 @@ CREDENTIAL_CONTROLS = [
 def get_all_controls():
     """Returns all security controls combined"""
     return (
+        SMB_SECURITY_CONTROLS +
+        PROTOCOL_ATTACK_CONTROLS +
+        INTERACTIVE_LOGON_CONTROLS +
+        MSS_CONTROLS +
+        PRINT_SERVICES_CONTROLS +
+        EDGE_BROWSER_CONTROLS +
+        ADDITIONAL_FIREWALL_CONTROLS +
+        APP_SECURITY_CONTROLS +
+        ADDITIONAL_OUTLOOK_CONTROLS +
+        WINDOWS_STORE_CONTROLS +
         AUTHENTICATION_CONTROLS +
         PRIVILEGE_CONTROLS +
         NETWORK_CONTROLS +
@@ -214,6 +354,16 @@ def get_all_controls():
 def get_control_counts():
     """Returns control counts by category"""
     return {
+        "SMB Security": len(SMB_SECURITY_CONTROLS),
+        "Protocol Attacks": len(PROTOCOL_ATTACK_CONTROLS),
+        "Interactive Logon": len(INTERACTIVE_LOGON_CONTROLS),
+        "MSS Settings": len(MSS_CONTROLS),
+        "Print Services": len(PRINT_SERVICES_CONTROLS),
+        "Browser Security": len(EDGE_BROWSER_CONTROLS),
+        "Additional Firewall": len(ADDITIONAL_FIREWALL_CONTROLS),
+        "Application Security": len(APP_SECURITY_CONTROLS),
+        "Additional Outlook": len(ADDITIONAL_OUTLOOK_CONTROLS),
+        "Windows Store": len(WINDOWS_STORE_CONTROLS),
         "Authentication": len(AUTHENTICATION_CONTROLS),
         "Privileges": len(PRIVILEGE_CONTROLS),
         "Network": len(NETWORK_CONTROLS),

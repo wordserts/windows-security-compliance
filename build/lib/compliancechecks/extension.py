@@ -1,7 +1,7 @@
 """
-Windows Security Compliance Extension v2.0
+Windows Security Compliance Extension v3.0
 Monitors Windows security configurations against CIS, Essential 8, and PCI-DSS
-Expanded to ~100 comprehensive security controls
+Comprehensive coverage with ~170 security controls
 """
 
 import winreg
@@ -40,7 +40,7 @@ class ComplianceExtension(Extension):
     def initialize(self):
         """Initialize the extension"""
         control_counts = get_control_counts()
-        self.logger.info("Initializing Windows Security Compliance Extension v2.0")
+        self.logger.info("Initializing Windows Security Compliance Extension v3.0")
         self.logger.info(f"Monitoring {control_counts['TOTAL']} security controls across CIS, Essential 8, and PCI-DSS")
         self.logger.info(f"Control breakdown by category:")
         for category, count in control_counts.items():

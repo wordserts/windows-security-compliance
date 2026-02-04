@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: compliancechecks
-Version: 2.0.0
+Version: 3.0.1
 Summary: Windows Security Compliance Extension
 Author: Vince
 Requires-Python: >=3.10

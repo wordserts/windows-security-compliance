@@ -2,7 +2,7 @@ from pathlib import Path
 from setuptools import find_packages, setup
 
 def find_version() -> str:
-    version = "2.0.0"
+    version = "1.0.0"
     extension_yaml_path = Path(__file__).parent / "extension" / "extension.yaml"
     try:
         with open(extension_yaml_path, encoding="utf-8") as f:
