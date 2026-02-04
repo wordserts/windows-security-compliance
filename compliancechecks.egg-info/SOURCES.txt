@@ -1,7 +1,7 @@
-README.md
 setup.py
 compliancechecks/__init__.py
 compliancechecks/__main__.py
+compliancechecks/controls.py
 compliancechecks/extension.py
 compliancechecks.egg-info/PKG-INFO
 compliancechecks.egg-info/SOURCES.txt
